@@ -1,0 +1,496 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "HabitPulse API",
+    "description": "Comprehensive production-grade API documentation for the HabitPulse portal managing habits, streak consistency tracking, check-ins, and user profile management.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "API v1 Endpoint Base"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Register New User",
+        "description": "Registers a new user account with email, password, and optional full name.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "demo2@habitpulse.com" },
+                  "password": { "type": "string", "minLength": 6, "example": "password123" },
+                  "name": { "type": "string", "example": "Demo User 2" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User successfully registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": { "$ref": "#/components/schemas/User" },
+                    "accessToken": { "type": "string" },
+                    "refreshToken": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User Login",
+        "description": "Authenticates user credentials and returns access and refresh JWT tokens.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "demo@habitpulse.com" },
+                  "password": { "type": "string", "example": "password123" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": { "$ref": "#/components/schemas/User" },
+                    "accessToken": { "type": "string" },
+                    "refreshToken": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Refresh Access Token",
+        "description": "Exchanges a valid refresh token for a new access token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["refreshToken"],
+                "properties": {
+                  "refreshToken": { "type": "string", "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tokens refreshed successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthTokens" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User Logout",
+        "description": "Destroys current active authentication session and clears cookies.",
+        "responses": {
+          "200": {
+            "description": "Successfully logged out"
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Get Profile details",
+        "description": "Retrieves the currently authenticated user profile information.",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Returns current user details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/auth/profile": {
+      "patch": {
+        "tags": ["Authentication"],
+        "summary": "Update User Profile",
+        "description": "Updates full name profile information for the authenticated user.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": { "type": "string", "example": "Updated User Name" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/password": {
+      "patch": {
+        "tags": ["Authentication"],
+        "summary": "Change User Password",
+        "description": "Changes password for the currently logged in user.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["currentPassword", "newPassword"],
+                "properties": {
+                  "currentPassword": { "type": "string", "example": "password123" },
+                  "newPassword": { "type": "string", "minLength": 6, "example": "newpassword123" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Password updated successfully" },
+          "400": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/habits": {
+      "get": {
+        "tags": ["Habits"],
+        "summary": "List Habits",
+        "description": "Returns habits with pagination, search, category filter, and pending-first sorting.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 12 } },
+          { "name": "search", "in": "query", "schema": { "type": "string" } },
+          { "name": "category", "in": "query", "schema": { "type": "string" } },
+          { "name": "filter", "in": "query", "schema": { "type": "string", "enum": ["active", "completed", "archived", "all"], "default": "active" } },
+          { "name": "sortBy", "in": "query", "schema": { "type": "string", "enum": ["pending", "newest", "streak", "rate", "title"], "default": "pending" } },
+          { "name": "includeArchived", "in": "query", "schema": { "type": "boolean", "default": false } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "habits": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Habit" }
+                    },
+                    "meta": { "$ref": "#/components/schemas/PaginationMeta" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Habits"],
+        "summary": "Create Habit",
+        "description": "Creates a new daily habit in the user's account.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["title"],
+                "properties": {
+                  "title": { "type": "string", "example": "Read 20 pages" },
+                  "description": { "type": "string", "example": "Read self-improvement book daily" },
+                  "category": { "type": "string", "example": "Learning" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Habit successfully created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Habit" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/habits/{id}": {
+      "get": {
+        "tags": ["Habits"],
+        "summary": "Get Habit Details",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Habit" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      },
+      "patch": {
+        "tags": ["Habits"],
+        "summary": "Update Habit",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string" },
+                  "description": { "type": "string" },
+                  "category": { "type": "string" },
+                  "archived": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Habit successfully updated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Habit" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Habits"],
+        "summary": "Delete Habit",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Habit successfully deleted" }
+        }
+      }
+    },
+    "/habits/{habitId}/checkin": {
+      "post": {
+        "tags": ["Check-ins"],
+        "summary": "Toggle Check-in",
+        "description": "Toggles check-in completion status for today or a targeted historical date.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "habitId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "date": { "type": "string", "example": "2026-07-27" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Check-in toggled successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "habitId": { "type": "string" },
+                    "date": { "type": "string" },
+                    "isCompleted": { "type": "boolean" },
+                    "habit": { "$ref": "#/components/schemas/Habit" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "ErrorResponse": {
+        "description": "Standardized Error Response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "message": { "type": "string", "example": "Error message explanation" },
+                "errors": {
+                  "type": "array",
+                  "items": { "type": "object" },
+                  "nullable": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "usr_94829a1b" },
+          "email": { "type": "string", "format": "email", "example": "demo@habitpulse.com" },
+          "name": { "type": "string", "nullable": true, "example": "Demo User" }
+        }
+      },
+      "CheckIn": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "chk_8321a" },
+          "habitId": { "type": "string", "example": "hbt_1928a" },
+          "date": { "type": "string", "example": "2026-07-27" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Habit": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "hbt_1928a" },
+          "title": { "type": "string", "example": "Read 20 pages" },
+          "description": { "type": "string", "nullable": true, "example": "Read self-improvement book daily" },
+          "category": { "type": "string", "example": "Learning" },
+          "archived": { "type": "boolean", "example": false },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "todayCompleted": { "type": "boolean", "example": true },
+          "currentStreak": { "type": "integer", "example": 19 },
+          "longestStreak": { "type": "integer", "example": 25 },
+          "totalCheckIns": { "type": "integer", "example": 64 },
+          "completionRate90Days": { "type": "integer", "example": 78 },
+          "checkInDates": {
+            "type": "array",
+            "items": { "type": "string", "example": "2026-07-27" }
+          },
+          "checkIns": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CheckIn" },
+            "nullable": true
+          }
+        }
+      },
+      "PaginationMeta": {
+        "type": "object",
+        "properties": {
+          "page": { "type": "integer", "example": 1 },
+          "limit": { "type": "integer", "example": 12 },
+          "total": { "type": "integer", "example": 20 },
+          "totalPages": { "type": "integer", "example": 2 }
+        }
+      },
+      "AuthTokens": {
+        "type": "object",
+        "properties": {
+          "accessToken": { "type": "string", "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." },
+          "refreshToken": { "type": "string", "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }
+        }
+      }
+    }
+  }
+}
