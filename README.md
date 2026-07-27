@@ -58,6 +58,35 @@ Client app will run at `http://localhost:3000`.
 
 ---
 
+## 🧠 Technical Decisions & Assumptions
+
+1. **365-Day Heatmap Grid vs 90-Day Grid**:
+   - *Decision*: Extended the heatmap from the baseline 90 days (~3 months) to a full **365-day GitHub-style contribution graph**.
+   - *Why*: Provides a complete annual consistency visualizer while seamlessly covering the 90-day requirement. Added auto-scroll to current activity on mobile viewports for optimal UX.
+
+2. **JWT Dual-Token Refresh Architecture**:
+   - *Decision*: Implemented short-lived Access Tokens paired with Refresh Tokens stored in HTTP-only cookies and `localStorage`.
+   - *Why*: Prevents session interruption. Added an automatic Axios interceptor to queue failed requests during token renewal.
+
+3. **Pending Tasks Priority & Optimistic UI**:
+   - *Decision*: Default habit sorting prioritizes habits requiring action today at the top of the dashboard.
+   - *Why*: Reduces user friction so active daily goals are immediately actionable upon logging in. Check-in actions update UI state in 0ms visually before background API sync.
+
+4. **Confirmation Modals for Critical Actions**:
+   - *Decision*: Prompt user confirmation before unchecking completed tasks, archiving, deleting, or performing bulk check-ins.
+   - *Why*: Protects user streak counts from accidental misclicks.
+
+---
+
+## 🔮 What I Would Improve With More Time
+
+1. **Social Accountability & Friend Leaderboards**: Allow users to share consistency streaks and compare monthly check-in rates with friends.
+2. **Push & Email Reminders**: Web push notifications or daily email reminders scheduled before midnight for pending habits.
+3. **Custom Habit Frequency Patterns**: Support flexible habit frequencies (e.g., 3 days per week, weekdays only) alongside daily habits.
+4. **Export & Import Analytics**: Export habit history to CSV/JSON for personal data ownership.
+
+---
+
 ## 🌐 Deployment Instructions
 
 ### Deploying Client to Vercel
