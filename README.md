@@ -1,110 +1,351 @@
-# HabitPulse - Personal Habit & Consistency Tracker
+# HabitPulse – Personal Habit & Consistency Tracker
 
-A production-grade, full-stack habit tracker built with **Next.js (App Router)**, **Express (TypeScript)**, **Neon PostgreSQL**, and **Prisma ORM**.
+A production-ready full-stack Habit Tracker built with **Next.js (App Router)**, **Express.js**, **TypeScript**, **PostgreSQL (Neon)** and **Prisma ORM**.
 
----
-
-## 🌟 Overview & Key Features
-
-- **GitHub-Style 365-Day Combined Heatmap**: Aggregates check-in completion intensity across all active habits over 365 days on the main Overview Dashboard with automatic month alignment and mobile touch auto-scroll.
-- **Interactive 365-Day Habit Calendar**: Individual habit detail pages feature a full 365-day interactive grid to record or remove historical check-ins.
-- **Pending Tasks Prioritization**: Dashboard default view places uncompleted daily tasks at the top with quick check-in toggle actions.
-- **Habit Categories & Search**: Filter habits by `Learning`, `Fitness`, `Health`, `Productivity`, `Mindfulness`, and `Finance`.
-- **Server & In-Memory Pagination**: Responsive pagination (`page`, `limit`, `total`) and sorting (`Pending First`, `Highest Streak`, `Highest 90-Day Rate`, `Newest First`, `Title A-Z`).
-- **Confirmation Modals**: Dialogs before critical actions (Bulk Check-in All, Uncheck Completed Task, Delete, Archive, Sign Out).
-- **Profile & Password Management**: Manage user profile name and change passwords with Zod validation and visibility toggles.
-- **Swagger OpenAPI Documentation**: Interactive API documentation at `/api-docs`.
-- **100% Mobile & Touch Responsive**: Mobile-first touch container layouts.
+This project was developed as part of the **Kodevio Limited – Full Stack Developer Intern Technical Assessment**.
 
 ---
 
-## 🛠️ Technology Stack
+## Live Demo
 
-| Component | Technology |
-| :--- | :--- |
-| **Frontend** | Next.js 16+ (App Router), TypeScript, Vanilla CSS + Tailwind CSS, Sonner Toast, Lucide Icons |
-| **Backend** | Node.js, Express.js (Modular TypeScript architecture), Zod, JWT, bcrypt, Swagger UI |
-| **Database & ORM** | PostgreSQL (Neon Cloud DB), Prisma ORM v7 (`@prisma/adapter-pg`) |
+**Frontend:** https://habitpulse-virid.vercel.app
+
+**Backend API:** https://habitpulse-l9v2.onrender.com
+
+**Swagger API Docs:** https://habitpulse-l9v2.onrender.com/api-docs
+
+**GitHub Repository:** https://github.com/mahdimonir/HabitPulse
 
 ---
 
-## 🚀 Local Setup Instructions
+## Project Overview
 
-### 1. Backend Setup (`/server`)
+HabitPulse helps users build consistent daily habits by tracking completion history, visualizing progress through GitHub-style contribution heatmaps, and calculating streak statistics.
+
+The application follows a modern full-stack architecture with secure authentication, REST APIs, PostgreSQL, Prisma ORM, and responsive UI.
+
+---
+
+# Features
+
+## Authentication
+
+- User Registration
+- User Login
+- JWT Authentication
+- Access Token & Refresh Token implementation
+- Protected Routes
+- Password Hashing using bcrypt
+
+---
+
+## Habit Management
+
+- Create Habit
+- Update Habit
+- Archive Habit
+- Delete Habit
+- Categorize Habits
+- Search & Filtering
+- Pagination
+- Sorting
+
+---
+
+## Daily Check-ins
+
+- Mark today's habit as completed
+- Undo today's completion
+- Historical check-ins
+- Interactive calendar
+
+---
+
+## Streak Analytics
+
+For every habit:
+
+- Current Streak
+- Longest Streak
+- Total Check-ins
+- 90-Day Completion Rate
+
+---
+
+## Heatmaps
+
+### Dashboard
+
+- Combined GitHub-style contribution heatmap
+- Aggregates activity across all habits
+
+### Habit Details
+
+- Interactive GitHub-style contribution heatmap
+- Supports historical check-ins
+
+> **Note:** The assignment required approximately **3 months** of visualization. This implementation extends the calendar to **365 days**, fully covering the original requirement while providing a richer yearly overview.
+
+---
+
+## Dashboard
+
+- Today's pending habits
+- Quick check-in
+- Overall statistics
+- Active streak summary
+- Top streak
+- Activity overview
+
+---
+
+## User Settings
+
+- Update profile
+- Change password
+
+---
+
+## API Documentation
+
+Interactive Swagger documentation available at
+
+https://habitpulse-l9v2.onrender.com/api-docs
+
+---
+
+# Technology Stack
+
+## Frontend
+
+- Next.js (App Router)
+- TypeScript
+- Tailwind CSS
+- Zod
+- Axios
+- Sonner
+- Lucide React
+
+## Backend
+
+- Node.js
+- Express.js
+- TypeScript
+- Prisma ORM
+- PostgreSQL (Neon)
+- JWT Authentication
+- bcrypt
+- Swagger
+- Zod
+
+## Database
+
+- PostgreSQL
+- Prisma ORM
+
+---
+
+# Project Structure
+
+```
+HabitPulse
+│
+├── client
+│   ├── src
+│   │   ├── app
+│   │   ├── components
+│   │   ├── context
+│   │   ├── lib
+│   │   └── types
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── vercel.json
+│
+└── server
+    ├── src
+    │   ├── config
+    │   ├── errors
+    │   ├── middleware
+    │   ├── modules
+    │   │   ├── auth
+    │   │   ├── checkins
+    │   │   └── habits
+    │   ├── routes
+    │   └── utils
+    │
+    ├── prisma
+    │   ├── schema.prisma
+    │   └── seed.ts
+    ├── package.json
+    ├── render.yaml
+    └── tsconfig.json
+```
+
+---
+
+# Local Setup
+
+## Clone Repository
+
+```bash
+git clone https://github.com/mahdimonir/HabitPulse.git
+
+cd HabitPulse
+```
+
+---
+
+## Backend
+
 ```bash
 cd server
+
 npm install
+
+cp .env.example .env
+```
+
+Configure
+
+```
+DATABASE_URL=
+JWT_ACCESS_SECRET=
+JWT_REFRESH_SECRET=
+CLIENT_URL=
+```
+
+Generate Prisma Client
+
+```bash
 npm run prisma:generate
+```
+
+Push Database
+
+```bash
 npm run prisma:push
+```
+
+Seed Database
+
+```bash
 npm run seed
+```
+
+Run Server
+
+```bash
 npm run dev
 ```
 
-Server API will run at `http://localhost:8000/api/v1`.  
-Interactive Swagger API docs available at `http://localhost:8000/api-docs`.
+Server:
 
-Demo Account Credentials:
-- **Email**: `demo@habitpulse.com`
-- **Password**: `password123`
+```
+http://localhost:8000
+```
 
-### 2. Frontend Setup (`/client`)
+Swagger
+
+```
+http://localhost:8000/api-docs
+```
+
+---
+
+## Frontend
+
 ```bash
 cd client
+
 npm install
+
+cp .env.example .env.local
+```
+
+Configure
+
+```
+NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+```
+
+Run
+
+```bash
 npm run dev
 ```
 
-Client app will run at `http://localhost:3000`.
+Client
+
+```
+http://localhost:3000
+```
 
 ---
 
-## 🧠 Technical Decisions & Assumptions
+# Demo Account
 
-1. **365-Day Heatmap Grid vs 90-Day Grid**:
-   - *Decision*: Extended the heatmap from the baseline 90 days (~3 months) to a full **365-day GitHub-style contribution graph**.
-   - *Why*: Provides a complete annual consistency visualizer while seamlessly covering the 90-day requirement. Added auto-scroll to current activity on mobile viewports for optimal UX.
+Email
 
-2. **JWT Dual-Token Refresh Architecture**:
-   - *Decision*: Implemented short-lived Access Tokens paired with Refresh Tokens stored in HTTP-only cookies and `localStorage`.
-   - *Why*: Prevents session interruption. Added an automatic Axios interceptor to queue failed requests during token renewal.
+```
+demo@habitpulse.com
+```
 
-3. **Pending Tasks Priority & Optimistic UI**:
-   - *Decision*: Default habit sorting prioritizes habits requiring action today at the top of the dashboard.
-   - *Why*: Reduces user friction so active daily goals are immediately actionable upon logging in. Check-in actions update UI state in 0ms visually before background API sync.
+Password
 
-4. **Confirmation Modals for Critical Actions**:
-   - *Decision*: Prompt user confirmation before unchecking completed tasks, archiving, deleting, or performing bulk check-ins.
-   - *Why*: Protects user streak counts from accidental misclicks.
+```
+password123
+```
 
 ---
 
-## 🔮 What I Would Improve With More Time
+# Technical Decisions
 
-1. **Social Accountability & Friend Leaderboards**: Allow users to share consistency streaks and compare monthly check-in rates with friends.
-2. **Push & Email Reminders**: Web push notifications or daily email reminders scheduled before midnight for pending habits.
-3. **Custom Habit Frequency Patterns**: Support flexible habit frequencies (e.g., 3 days per week, weekdays only) alongside daily habits.
-4. **Export & Import Analytics**: Export habit history to CSV/JSON for personal data ownership.
+### Express Modular Architecture
+
+Separated into feature modules, services, middleware, validation, and utilities for maintainability and scalability.
+
+### Prisma ORM
+
+Selected for type safety, migrations, and excellent TypeScript integration.
+
+### JWT Authentication
+
+Implemented Access Token and Refresh Token authentication to support secure sessions.
+
+### 365-Day Heatmap
+
+Although the assignment requested approximately three months of history, the implementation extends this to a full 365-day GitHub-style contribution calendar while still satisfying the original requirement.
+
+### Optimistic Updates
+
+Check-ins update immediately in the UI while synchronizing with the backend for a smoother user experience.
 
 ---
 
-## 🌐 Deployment Instructions
+# Assumptions
 
-### Deploying Client to Vercel
-1. Import your GitHub repository to [Vercel](https://vercel.com).
-2. Set **Root Directory** to `client`.
-3. Framework Preset: **Next.js**.
-4. Set Environment Variable:
-   - `NEXT_PUBLIC_API_URL`: `https://<your-render-backend-url>/api/v1`
-5. Click **Deploy**.
+- One user owns many habits.
+- A habit can have at most one check-in per day.
+- Archived habits remain in history but are hidden from active tracking.
+- Streak calculations are based solely on recorded check-ins.
 
-### Deploying Server to Render
-1. Create a **Web Service** on [Render](https://render.com).
-2. Set **Root Directory** to `server`.
-3. Set **Build Command**: `npm run build`
-4. Set **Start Command**: `npm run start`
-5. Set Environment Variables:
-   - `DATABASE_URL`: Your Neon PostgreSQL Connection String
-   - `JWT_ACCESS_SECRET`: Secret key string
-   - `JWT_REFRESH_SECRET`: Secret key string
-   - `CLIENT_URL`: `https://<your-vercel-frontend-url>`
-   - `NODE_ENV`: `production`
+---
+
+# Future Improvements
+
+- Push Notifications
+- Email Reminders
+- Habit Scheduling (Weekdays, Custom Frequency)
+- Social Sharing
+- Friend Leaderboards
+- Monthly Reports
+- Offline Support (PWA)
+- Unit & Integration Tests
+- Docker Deployment
+- CI/CD Pipeline
+
+---
+
+# Time Spent
+
+Approximately **2 days**, including planning, backend development, frontend implementation, deployment, testing, and documentation.
