@@ -4,7 +4,7 @@ import express from 'express';
 import { config } from './config/env';
 import { setupSwagger } from './config/swagger';
 import { globalErrorHandler } from './middleware/errorHandler';
-import apiRoutes from './routes';
+import routes from './routes';
 
 const app = express();
 
@@ -28,7 +28,7 @@ app.use(cookieParser());
 
 setupSwagger(app);
 
-app.use('/api/v1', apiRoutes);
+app.use('/', routes);
 app.use(globalErrorHandler);
 
 export default app;
